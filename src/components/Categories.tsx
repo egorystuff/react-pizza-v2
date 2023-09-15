@@ -4,19 +4,17 @@ export function Categories() {
   // initial array of categories-------------------------------------------
   const arrayCatedories: Array<string> = ["Все", "Мясные", "Вегетарианская", "Гриль", "Острые", "Закрытые"];
 
-  // category selection filterы----------------------------------------------
+  // pizza category selection filter----------------------------------------------
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const onClickCategory = (index: number): void => {
-    setActiveIndex(index);
-  };
 
   return (
     <div className='categories'>
       <ul>
         {arrayCatedories.map((value: string, index: number, array: Array<string>) => (
           <li
+            key={index}
             onClick={() => {
-              onClickCategory(index);
+              setActiveIndex(index);
             }}
             className={activeIndex === index ? "active" : ""}>
             {value}
