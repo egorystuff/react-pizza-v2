@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./scss/app.scss";
 import { Header } from "./components/Header";
 import { Categories } from "./components/Categories";
 import { Sort } from "./components/Sort";
 import { PizzaBlock } from "./components/PizzaBlock";
-import pizzas from "./assets/pizzas.json";
 
 type PizzasType = {
   id: number;
@@ -18,6 +17,18 @@ type PizzasType = {
 };
 
 function App() {
+  const [items, setItems] = useState<never[]>([]);
+
+  useEffect((): void => {
+    fetch("https://65060aa5ef808d3c66f0c4dc.mockapi.io/items")
+      .then((res) => {
+        return res.json();
+      })
+      .then((arr) => {
+        setItems(arr);
+      });
+  }, []);
+
   return (
     <div className='wrapper'>
       <Header />
@@ -29,7 +40,7 @@ function App() {
           </div>
           <h2 className='content__title'>Все пиццы</h2>
           <div className='content__items'>
-            {pizzas.map((obj: PizzasType) => (
+            {items.map((obj: PizzasType) => (
               <PizzaBlock key={obj.id} {...obj} />
             ))}
           </div>
