@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 
-export function Categories() {
+type PropsType = {
+  categoryId: number;
+  setCategoryId: (index: number) => void;
+};
+
+export function Categories(props: PropsType) {
   // initial array of categories-------------------------------------------
   const arrayCatedories: Array<string> = ["Все", "Мясные", "Вегетарианская", "Гриль", "Острые", "Закрытые"];
-
-  // pizza category selection filter----------------------------------------------
-  const [activeIndex, setActiveIndex] = useState<number>(0);
 
   return (
     <div className='categories'>
@@ -14,9 +16,9 @@ export function Categories() {
           <li
             key={index}
             onClick={() => {
-              setActiveIndex(index);
+              props.setCategoryId(index);
             }}
-            className={activeIndex === index ? "active" : ""}>
+            className={props.categoryId === index ? "active" : ""}>
             {value}
           </li>
         ))}
