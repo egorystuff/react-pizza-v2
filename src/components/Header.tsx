@@ -2,8 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import pizzaLogo from "../assets/img/pizza-logo.svg";
+import { Search } from "./Search/Search";
 
-export function Header() {
+export type SearchPropsType = {
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+};
+
+export function Header(props: SearchPropsType) {
   return (
     <div className='header'>
       <div className='container'>
@@ -16,6 +22,8 @@ export function Header() {
             </div>
           </div>
         </Link>
+
+        <Search searchValue={props.searchValue} setSearchValue={props.setSearchValue} />
 
         <div className='header__cart'>
           <Link to='/cart' className='button button--cart'>
