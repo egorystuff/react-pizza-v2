@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import styles from "./styles.module.scss";
-import { SearchPropsType } from "../Header";
+import { SearchContext } from "../../App";
 
-export const Search = (props: SearchPropsType) => {
+export const Search = () => {
+  const { searchValue, setSearchValue } = useContext(SearchContext);
+
   return (
     <div className={styles.root}>
       <svg
@@ -22,15 +24,15 @@ export const Search = (props: SearchPropsType) => {
         />
       </svg>
       <input
-        value={props.searchValue}
-        onChange={(event) => props.setSearchValue(event.target.value)}
+        value={searchValue}
+        onChange={(event) => setSearchValue(event.target.value)}
         className={styles.input}
         placeholder='Поиск пиццы...'
       />
 
-      {props.searchValue && (
+      {searchValue && (
         <svg
-          onClick={() => props.setSearchValue("")}
+          onClick={() => setSearchValue("")}
           className={styles.clearIcon}
           width='800px'
           height='800px'

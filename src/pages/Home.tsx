@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { PizzaBlock } from "../components/PizzaBlock/PizzaBlock";
 import { Categories } from "../components/Categories";
 import { Sort, SortListType } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
+import { SearchContext } from "../App";
 
 type PizzasType = {
   id: number;
@@ -17,7 +18,9 @@ type PizzasType = {
   rating: number;
 };
 
-export const Home = (props: { searchValue: string }) => {
+export const Home = () => {
+  const { searchValue } = useContext(SearchContext);
+
   // pizza category selection filter----------------------------------------------
   const [categoryId, setCategoryId] = useState<number>(0);
 
@@ -40,10 +43,10 @@ export const Home = (props: { searchValue: string }) => {
     const order = sortType.sortProperty.includes("-") ? "asc" : "desc";
     const sortBy = sortType.sortProperty.replace("-", "");
     const category = categoryId > 0 ? `category=${categoryId}` : "";
-    const serch = props.searchValue ? `&search=${props.searchValue}` : "";
+    const serch = searchValue ? `&search=${searchValue}` : "";
 
     fetch(
-      `https://65060aa5ef808d3c66f0c4dc.mockapi.io/items?&page=${currentPage}&limit=4${category}&sortBy=${sortBy}&order=${order}${serch}`,
+      `https://65060aa5ef808d3c66f0c4dc.mockapi.io/items?&page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${serch}`,
     )
       .then((res) => {
         return res.json();
@@ -54,7 +57,7 @@ export const Home = (props: { searchValue: string }) => {
       });
 
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, props.searchValue, currentPage]);
+  }, [categoryId, sortType, searchValue, currentPage]);
 
   // Below are the constants that are used for data rendering
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
