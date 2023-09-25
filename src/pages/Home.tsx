@@ -60,7 +60,7 @@ export const Home = () => {
   }, [categoryId, sortType, searchValue, currentPage]);
 
   // Below are the constants that are used for data rendering
-  const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
+  const skeletons = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
   const pizzas = items.map((obj: PizzasType) => <PizzaBlock key={obj.id} {...obj} />);
 
   // This is a code variant for searching data in a static array, without asking the backend
