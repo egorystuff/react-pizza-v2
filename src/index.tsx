@@ -14,5 +14,3 @@ root.render(
     </Provider>
   </BrowserRouter>,
 );
-
-console.log(store);

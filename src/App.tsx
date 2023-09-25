@@ -32,3 +32,29 @@ function App() {
 }
 
 export default App;
+
+// this exsample using useContext
+
+// export const SearchContext = createContext({
+//   searchValue: "",
+//   setSearchValue: (searchValue: string) => {},
+// });
+
+// function App() {
+//   const [searchValue, setSearchValue] = useState("");
+
+//   return (
+//     <div className='wrapper'>
+//       <SearchContext.Provider value={{ searchValue, setSearchValue }}>
+//         <Header />
+//         <div className='content'>
+//           <Routes>
+//             <Route path='/' element={<Home />} />
+//             <Route path='cart' element={<Cart />} />
+//             <Route path='*' element={<NotFound />} />
+//           </Routes>
+//         </div>
+//       </SearchContext.Provider>
+//     </div>
+//   );
+// }

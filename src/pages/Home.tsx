@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { PizzaBlock } from "../components/PizzaBlock/PizzaBlock";
@@ -6,6 +7,8 @@ import { Categories } from "../components/Categories";
 import { Sort, SortListType } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
 import { SearchContext } from "../App";
+import type { RootState } from "../redux/store";
+import { setCategoryId } from "../redux/slices/filterSlice";
 
 type PizzasType = {
   id: number;
@@ -19,10 +22,12 @@ type PizzasType = {
 };
 
 export const Home = () => {
+  const dispatch = useDispatch();
   const { searchValue } = useContext(SearchContext);
 
   // pizza category selection filter----------------------------------------------
-  const [categoryId, setCategoryId] = useState<number>(0);
+  // const [categoryId, setCategoryId] = useState<number>(0);
+  const categoryId = useSelector((state: RootState) => state.filter.categoryId);
 
   // logic for working the sort list----------------------------------------------
   const [sortType, setSortType] = useState<SortListType>({
@@ -80,7 +85,7 @@ export const Home = () => {
         <Categories
           categoryId={categoryId}
           setCategoryId={(index) => {
-            setCategoryId(index);
+            dispatch(setCategoryId(index));
           }}
         />
         <Sort
