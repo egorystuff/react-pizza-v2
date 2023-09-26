@@ -3,10 +3,6 @@ import ReactPaginate from "react-paginate";
 
 import styles from "./styles.module.scss";
 
-// type PropsType = {
-//   onChangePage: (value: number) => void;
-// };
-
 export const Pagination = (props: { onChangePage: (value: number) => void }) => {
   return (
     <ReactPaginate

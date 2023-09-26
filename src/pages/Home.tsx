@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { PizzaBlock } from "../components/PizzaBlock/PizzaBlock";
 import { Categories } from "../components/Categories";
-import { Sort, SortListType } from "../components/Sort";
+import { Sort } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
 import { SearchContext } from "../App";
 import type { RootState } from "../redux/store";
@@ -22,29 +22,23 @@ type PizzasType = {
 };
 
 export const Home = () => {
-  const dispatch = useDispatch();
   const { searchValue } = useContext(SearchContext);
 
-  // pizza category selection filter----------------------------------------------
-  // const [categoryId, setCategoryId] = useState<number>(0);
-  const categoryId = useSelector((state: RootState) => state.filter.categoryId);
+  // get data using redux-------------------------------------------------------------------------------------------------
+  const dispatch = useDispatch();
+  const { categoryId, sortType } = useSelector((state: RootState) => state.filter);
 
-  // logic for working the sort list----------------------------------------------
-  const [sortType, setSortType] = useState<SortListType>({
-    name: "популярности (убывание)",
-    sortProperty: "rating",
-  });
-
+  // this useState for pagination-----------------------------------------------------------------------------------------
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // logic for requesting data from the server, first rendering-------------------
-  // and displaying the skeleton component----------------------------------------
+  // logic for requesting data from the server, first rendering and displaying the skeleton component---------------------
   const [items, setItems] = useState<never[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
   useEffect((): void => {
     setIsLoading(true);
 
-    // These are constants that are used to make a request to the server
+    // These are constants that are used to make a request to the server--------------------------------------------------
     const order = sortType.sortProperty.includes("-") ? "asc" : "desc";
     const sortBy = sortType.sortProperty.replace("-", "");
     const category = categoryId > 0 ? `category=${categoryId}` : "";
@@ -62,22 +56,11 @@ export const Home = () => {
       });
 
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue, currentPage]);
+  }, [categoryId, sortType.sortProperty, searchValue, currentPage]);
 
-  // Below are the constants that are used for data rendering
+  // Below are the constants that are used for data rendering-------------------------------------------------------------
   const skeletons = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
   const pizzas = items.map((obj: PizzasType) => <PizzaBlock key={obj.id} {...obj} />);
-
-  // This is a code variant for searching data in a static array, without asking the backend
-  /*const pizzas = items
-    .filter((obj: PizzasType) => {
-      if (obj.title.toLowerCase().includes(props.searchValue.toLowerCase())) {
-        return true;
-      }
-      return false;
-    })
-    .map((obj: PizzasType) => <PizzaBlock key={obj.id} {...obj} />);
-    */
 
   return (
     <div className='container'>
@@ -88,12 +71,7 @@ export const Home = () => {
             dispatch(setCategoryId(index));
           }}
         />
-        <Sort
-          sortType={sortType}
-          setSortType={(value) => {
-            setSortType(value);
-          }}
-        />
+        <Sort />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
       <div className='content__items'>{isLoading ? skeletons : pizzas}</div>
