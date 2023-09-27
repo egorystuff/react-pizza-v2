@@ -1,10 +1,31 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useRef } from "react";
+import debounce from "lodash.debounce";
 
 import styles from "./styles.module.scss";
 import { SearchContext } from "../../App";
 
 export const Search = () => {
   const { searchValue, setSearchValue } = useContext(SearchContext);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onClickClear = () => {
+    setSearchValue("");
+    if (inputRef.current !== null) {
+      inputRef.current.focus();
+    }
+  };
+
+  const testDebounce = useCallback(
+    debounce(() => {
+      console.log("hi");
+    }, 1000),
+    [],
+  );
+
+  const onChangeInput = (event: { target: { value: string } }) => {
+    setSearchValue(event.target.value);
+    testDebounce();
+  };
 
   return (
     <div className={styles.root}>
@@ -24,15 +45,16 @@ export const Search = () => {
         />
       </svg>
       <input
+        ref={inputRef}
         value={searchValue}
-        onChange={(event) => setSearchValue(event.target.value)}
+        onChange={onChangeInput}
         className={styles.input}
         placeholder='Поиск пиццы...'
       />
 
       {searchValue && (
         <svg
-          onClick={() => setSearchValue("")}
+          onClick={() => onClickClear()}
           className={styles.clearIcon}
           width='800px'
           height='800px'
