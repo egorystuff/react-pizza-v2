@@ -9,6 +9,15 @@ export type SortListType = {
   sortProperty: string;
 };
 
+export const sortList: SortListType[] = [
+  { name: "популярности (убывание)", sortProperty: "rating" },
+  { name: "популярности (возростание)", sortProperty: "-rating" },
+  { name: "цене (убывание)", sortProperty: "price" },
+  { name: "цене (возростание)", sortProperty: "-price" },
+  { name: "алфавиту (убывание)", sortProperty: "title" },
+  { name: "алфавиту (возростание)", sortProperty: "-title" },
+];
+
 export function Sort() {
   const dispatch = useDispatch();
 
@@ -17,14 +26,7 @@ export function Sort() {
 
   // logic for working the sort list
   const [isSort, setIsSort] = useState<boolean>(false);
-  const sortList: SortListType[] = [
-    { name: "популярности (убывание)", sortProperty: "rating" },
-    { name: "популярности (возростание)", sortProperty: "-rating" },
-    { name: "цене (убывание)", sortProperty: "price" },
-    { name: "цене (возростание)", sortProperty: "-price" },
-    { name: "алфавиту (убывание)", sortProperty: "title" },
-    { name: "алфавиту (возростание)", sortProperty: "-title" },
-  ];
+
   const onClickSortList = (obj: SortListType) => {
     dispatch(setSortType(obj));
     setIsSort(false);
