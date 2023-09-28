@@ -1,30 +1,34 @@
-import React, { useCallback, useContext, useRef } from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import debounce from "lodash.debounce";
 
 import styles from "./styles.module.scss";
 import { SearchContext } from "../../App";
 
 export const Search = () => {
-  const { searchValue, setSearchValue } = useContext(SearchContext);
+  const [value, setValue] = useState<string>("");
+  const { setSearchValue } = useContext(SearchContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // function for clearing input by clicking on the clear button
   const onClickClear = () => {
     setSearchValue("");
+    setValue("");
     if (inputRef.current !== null) {
       inputRef.current.focus();
     }
   };
 
-  const testDebounce = useCallback(
-    debounce(() => {
-      console.log("hi");
-    }, 1000),
+  const updateSearchValue = useCallback(
+    debounce((value) => {
+      setSearchValue(value);
+    }, 300),
     [],
   );
 
+  // function to update local state and call deferred search function
   const onChangeInput = (event: { target: { value: string } }) => {
-    setSearchValue(event.target.value);
-    testDebounce();
+    setValue(event.target.value);
+    updateSearchValue(event.target.value);
   };
 
   return (
@@ -46,13 +50,13 @@ export const Search = () => {
       </svg>
       <input
         ref={inputRef}
-        value={searchValue}
+        value={value}
         onChange={onChangeInput}
         className={styles.input}
         placeholder='Поиск пиццы...'
       />
 
-      {searchValue && (
+      {value && (
         <svg
           onClick={() => onClickClear()}
           className={styles.clearIcon}

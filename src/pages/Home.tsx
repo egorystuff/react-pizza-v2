@@ -9,7 +9,7 @@ import { Sort } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
 import { SearchContext } from "../App";
 import type { RootState } from "../redux/store";
-import { setCategoryId } from "../redux/slices/filterSlice";
+import { setCategoryId, setCurrentPage } from "../redux/slices/filterSlice";
 
 type PizzasType = {
   id: number;
@@ -27,10 +27,7 @@ export const Home = () => {
 
   // get data using redux-------------------------------------------------------------------------------------------------
   const dispatch = useDispatch();
-  const { categoryId, sortType } = useSelector((state: RootState) => state.filter);
-
-  // this useState for pagination-----------------------------------------------------------------------------------------
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { categoryId, sortType, currentPage } = useSelector((state: RootState) => state.filter);
 
   // logic for requesting data from the server, first rendering and displaying the skeleton component---------------------
   const [items, setItems] = useState<never[]>([]);
@@ -75,7 +72,7 @@ export const Home = () => {
       <h2 className='content__title'>Все пиццы</h2>
       <div className='content__items'>{isLoading ? skeletons : pizzas}</div>
 
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination currentPage={currentPage} onChangePage={(number) => dispatch(setCurrentPage(number))} />
     </div>
   );
 };
