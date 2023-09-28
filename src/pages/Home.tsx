@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import qs from "qs";
@@ -6,7 +6,7 @@ import qs from "qs";
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { PizzaBlock } from "../components/PizzaBlock/PizzaBlock";
 import { Categories } from "../components/Categories";
-import { Sort, sortList, SortListType } from "../components/Sort";
+import { Sort, sortList } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
 import { SearchContext } from "../App";
 import type { RootState } from "../redux/store";
@@ -29,6 +29,9 @@ export const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const isSearch = useRef(false);
+  const isMounted = useRef(false);
+
   // get data using redux-------------------------------------------------------------------------------------------------
 
   const { categoryId, sortType, currentPage } = useSelector((state: RootState) => state.filter);
@@ -37,20 +40,8 @@ export const Home = () => {
   const [items, setItems] = useState<never[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // parsing parameters from the address bar
-  useEffect(() => {
-    if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
-
-      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
-      console.log("sort", sort);
-      console.log("params", params);
-
-      // dispatch(setFilters({ ...params, sort }));
-    }
-  }, []);
-
-  useEffect((): void => {
+  // This is a function to request and receive data from the server
+  const fetchPizzas = () => {
     setIsLoading(true);
 
     // These are constants that are used to make a request to the server--------------------------------------------------
@@ -67,20 +58,40 @@ export const Home = () => {
         setItems(res.data);
         setIsLoading(false);
       });
+  };
 
-    window.scrollTo(0, 0);
+  // parsing parameters from the address bar
+  useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
+      console.log("sort", sort);
+      console.log("params", params);
+
+      dispatch(setFilters({ ...params, sort }));
+      isSearch.current = true;
+    }
+  }, []);
+
+  useEffect((): void => {
+    if (!isSearch.current) fetchPizzas();
+    isSearch.current = false;
   }, [categoryId, sortType.sortProperty, searchValue, currentPage]);
 
   // we get the URL address string
   useEffect((): void => {
-    const queryString = qs.stringify({
-      categoryId,
-      currentPage,
-      sortProperty: sortType.sortProperty,
-    });
+    if (isMounted.current) {
+      const queryString = qs.stringify({
+        sortProperty: sortType.sortProperty,
+        categoryId,
+        currentPage,
+      });
 
-    navigate(`?${queryString}`);
-  }, [categoryId, sortType.sortProperty, searchValue, currentPage]);
+      navigate(`?${queryString}`);
+    }
+
+    isMounted.current = true;
+  }, [categoryId, sortType.sortProperty, currentPage]);
 
   // Below are the constants that are used for data rendering-------------------------------------------------------------
   const skeletons = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
