@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -20,6 +20,7 @@ export const sortList: SortListType[] = [
 
 export function Sort() {
   const dispatch = useDispatch();
+  const sortRef = useRef<HTMLDivElement>(null);
 
   // logic for working the sort list--------------------------------------------------------------------------------------
   const sortType = useSelector((state: RootState) => state.filter.sortType);
@@ -32,8 +33,23 @@ export function Sort() {
     setIsSort(false);
   };
 
+  //this is a method for detecting a click on a body area and removing it if the sort component disappears from the page
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current !== null) {
+        if (!event.composedPath().includes(sortRef.current)) {
+          setIsSort(false);
+        }
+      }
+    };
+
+    document.body.addEventListener("click", handleClickOutside); // sort mount
+
+    return () => document.body.removeEventListener("click", handleClickOutside);
+  }, []);
+
   return (
-    <div className='sort'>
+    <div ref={sortRef} className='sort'>
       <div className='sort__label'>
         <svg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'>
           <path

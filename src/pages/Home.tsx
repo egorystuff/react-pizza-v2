@@ -29,11 +29,10 @@ export const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isSearch = useRef(false);
-  const isMounted = useRef(false);
+  const isSearch = useRef(false); //constant to wait for data to be received from the address bar
+  const isMounted = useRef(false); //constant to determine the first render
 
   // get data using redux-------------------------------------------------------------------------------------------------
-
   const { categoryId, sortType, currentPage } = useSelector((state: RootState) => state.filter);
 
   // logic for requesting data from the server, first rendering and displaying the skeleton component---------------------
@@ -60,25 +59,7 @@ export const Home = () => {
       });
   };
 
-  // parsing parameters from the address bar
-  useEffect(() => {
-    if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
-      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
-      console.log("sort", sort);
-      console.log("params", params);
-
-      dispatch(setFilters({ ...params, sort }));
-      isSearch.current = true;
-    }
-  }, []);
-
-  useEffect((): void => {
-    if (!isSearch.current) fetchPizzas();
-    isSearch.current = false;
-  }, [categoryId, sortType.sortProperty, searchValue, currentPage]);
-
-  // we get the URL address string
+  // if some parameters were changed and there was a first render, then execute this code
   useEffect((): void => {
     if (isMounted.current) {
       const queryString = qs.stringify({
@@ -89,9 +70,33 @@ export const Home = () => {
 
       navigate(`?${queryString}`);
     }
-
     isMounted.current = true;
   }, [categoryId, sortType.sortProperty, currentPage]);
+
+  // check the URL parameters during the first render and save them in the REDUX
+  useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
+
+      dispatch(setFilters({ ...params, sort }));
+      isSearch.current = true;
+    }
+  }, []);
+
+  // this hook is responsible for rendering pizzas
+  useEffect((): void => {
+    if (!isSearch.current) {
+      fetchPizzas();
+    }
+    isSearch.current = false;
+  }, [categoryId, sortType.sortProperty, searchValue, currentPage]);
+
+  useEffect(() => {
+    if (window.location.search) {
+      fetchPizzas();
+    }
+  }, []);
 
   // Below are the constants that are used for data rendering-------------------------------------------------------------
   const skeletons = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
