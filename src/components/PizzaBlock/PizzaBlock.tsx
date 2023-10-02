@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { addItem } from "../../redux/slices/cartSlice";
+import { RootState } from "../../redux/store";
 
 type PropsType = {
   id: number;
@@ -16,6 +17,9 @@ type PropsType = {
 
 export function PizzaBlock(props: PropsType) {
   const dispatch = useDispatch();
+  const cartItem = useSelector((state: RootState) => state.cart.items.find((obj) => obj.id === props.id));
+
+  const addedCount = cartItem ? cartItem.count : 0;
 
   // pizza size selection filter----------------------------------------------
   const [pizzaSize, setPizzaSize] = useState<number>(0);
@@ -29,9 +33,10 @@ export function PizzaBlock(props: PropsType) {
       id: props.id,
       imageUrl: props.imageUrl,
       title: props.title,
-      types: pizzaType,
+      types: arrPizzasTypes[pizzaType],
       sizes: pizzaSize,
       price: props.price,
+      count: 1,
     };
     dispatch(addItem(item));
   };
@@ -77,7 +82,7 @@ export function PizzaBlock(props: PropsType) {
               />
             </svg>
             <span>Добавить</span>
-            <i>0</i>
+            {addedCount > 0 && <i>{addedCount}</i>}
           </button>
         </div>
       </div>
