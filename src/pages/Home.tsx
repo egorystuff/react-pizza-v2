@@ -13,7 +13,7 @@ import type { RootState } from "../redux/store";
 import { setCategoryId, setCurrentPage, setFilters } from "../redux/slices/filterSlice";
 import { useNavigate } from "react-router-dom";
 
-type PizzasType = {
+export type PizzasType = {
   id: number;
   imageUrl: string;
   title: string;

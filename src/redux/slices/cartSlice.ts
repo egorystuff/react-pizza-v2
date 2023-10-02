@@ -1,25 +1,47 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { PizzasType } from "../../pages/Home";
+import { stat } from "fs";
 
-export interface FilterState {
-  categoryId: number;
+export interface ItemsType {
+  id: number;
+  imageUrl: string;
+  title: string;
+  types: number;
+  sizes: number;
+  price: number;
+}
+export interface CartState {
+  totalPrice: number;
+  items: ItemsType[];
 }
 
-const initialState: FilterState = {
-  categoryId: 0,
+const initialState: CartState = {
+  totalPrice: 0,
+  items: [],
 };
 
-export const filterSlice = createSlice({
-  name: "filters",
+export const cartSlice = createSlice({
+  name: "cart",
   initialState,
   reducers: {
-    setCategoryId: (state, action: PayloadAction<number>) => {
-      state.categoryId = action.payload;
+    addItem: (state, action: PayloadAction<ItemsType>) => {
+      state.items.push(action.payload);
+      state.totalPrice = state.items.reduce((sum, obj) => {
+        return obj.price + sum;
+      }, 0);
+    },
+
+    romoveItem: (state, action) => {
+      state.items = state.items.filter((obj) => obj !== action.payload);
+    },
+    clearItems: (state) => {
+      state.items = [];
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setCategoryId } = filterSlice.actions;
+export const { addItem, romoveItem, clearItems } = cartSlice.actions;
 
-export default filterSlice.reducer;
+export default cartSlice.reducer;
