@@ -34,7 +34,7 @@ export function PizzaBlock(props: PropsType) {
       imageUrl: props.imageUrl,
       title: props.title,
       types: arrPizzasTypes[pizzaType],
-      sizes: pizzaSize,
+      sizes: props.sizes[pizzaSize],
       price: props.price,
       count: 1,
     };
