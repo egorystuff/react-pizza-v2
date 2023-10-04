@@ -20,8 +20,6 @@ const initialState: CartState = {
   items: [],
 };
 
-const checkPrice = () => {};
-
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -42,7 +40,7 @@ export const cartSlice = createSlice({
       const findItem = state.items.find((obj) => obj.id === action.payload.id);
       if (findItem) findItem.count--;
       state.totalPrice = state.items.reduce((sum, obj) => {
-        if (obj.count < 0) obj.count = 0;
+        if (obj.count === 0) state.items = state.items.filter((obj) => obj.id !== action.payload.id);
         return obj.price * obj.count + sum;
       }, 0);
     },

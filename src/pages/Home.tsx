@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import qs from "qs";
+import { useNavigate } from "react-router-dom";
 
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { PizzaBlock } from "../components/PizzaBlock/PizzaBlock";
@@ -11,7 +11,7 @@ import { Pagination } from "../components/Pagination/Pagination";
 import { SearchContext } from "../App";
 import type { RootState } from "../redux/store";
 import { setCategoryId, setCurrentPage, setFilters } from "../redux/slices/filterSlice";
-import { useNavigate } from "react-router-dom";
+import { fetchPizzas } from "../redux/slices/pizzaSlice";
 
 export type PizzasType = {
   id: number;
@@ -32,31 +32,30 @@ export const Home = () => {
   const isSearch = useRef(false); //constant to wait for data to be received from the address bar
   const isMounted = useRef(false); //constant to determine the first render
 
+  const { items } = useSelector((state: RootState) => state.pizza);
+
   // get data using redux-------------------------------------------------------------------------------------------------
   const { categoryId, sortType, currentPage } = useSelector((state: RootState) => state.filter);
 
-  // logic for requesting data from the server, first rendering and displaying the skeleton component---------------------
-  const [items, setItems] = useState<never[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // This is a function to request and receive data from the server
-  const fetchPizzas = () => {
+  const getPizzas = async () => {
     setIsLoading(true);
 
     // These are constants that are used to make a request to the server--------------------------------------------------
-    const order = sortType.sortProperty.includes("-") ? "asc" : "desc";
-    const sortBy = sortType.sortProperty.replace("-", "");
-    const category = categoryId > 0 ? `category=${categoryId}` : "";
-    const serch = searchValue ? `&search=${searchValue}` : "";
+    const order: string = sortType.sortProperty.includes("-") ? "asc" : "desc";
+    const sortBy: string = sortType.sortProperty.replace("-", "");
+    const category: string = categoryId > 0 ? `category=${categoryId}` : "";
+    const search: string = searchValue ? `&search=${searchValue}` : "";
 
-    axios
-      .get(
-        `https://65060aa5ef808d3c66f0c4dc.mockapi.io/items?&page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${serch}`,
-      )
-      .then((res) => {
-        setItems(res.data);
-        setIsLoading(false);
-      });
+    try {
+      dispatch(fetchPizzas(order));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // if some parameters were changed and there was a first render, then execute this code
@@ -87,14 +86,14 @@ export const Home = () => {
   // this hook is responsible for rendering pizzas
   useEffect((): void => {
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
     isSearch.current = false;
   }, [categoryId, sortType.sortProperty, searchValue, currentPage]);
 
   useEffect(() => {
     if (window.location.search) {
-      fetchPizzas();
+      getPizzas();
     }
   }, []);
 
