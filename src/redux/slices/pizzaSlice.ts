@@ -21,14 +21,18 @@ type PizzaType = {
   rating: number;
 };
 
-export const fetchPizzas = createAsyncThunk<PizzaType[], PizzaParams>("pizza/fetchPizzasByIdStatus", async (params) => {
-  const { sortBy, order, category, search, currentPage } = params;
+export const fetchPizzas = createAsyncThunk<PizzaType[], PizzaParams>(
+  "pizza/fetchPizzasByIdStatus",
+  async (params, thunkAPI) => {
+    const { sortBy, order, category, search, currentPage } = params;
 
-  const response = await axios.get(
-    `https://65060aa5ef808d3c66f0c4dc.mockapi.io/items?&page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-  );
-  return response.data;
-});
+    const response = await axios.get(
+      `https://65060aa5ef808d3c66f0c4dc.mockapi.io/items?&page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+    );
+
+    return response.data;
+  },
+);
 
 export interface PizzaSliceState {
   items: PizzaType[];
