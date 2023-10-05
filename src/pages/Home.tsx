@@ -9,7 +9,7 @@ import { Categories } from "../components/Categories";
 import { Sort, sortList } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
 import { SearchContext } from "../App";
-import type { RootState } from "../redux/store";
+import { useAppDispatch, type RootState } from "../redux/store";
 import { setCategoryId, setCurrentPage, setFilters } from "../redux/slices/filterSlice";
 import { fetchPizzas } from "../redux/slices/pizzaSlice";
 
@@ -26,7 +26,7 @@ export type PizzasType = {
 
 export const Home = () => {
   const { searchValue } = useContext(SearchContext);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const isSearch = useRef(false); //constant to wait for data to be received from the address bar
@@ -50,7 +50,7 @@ export const Home = () => {
     const search: string = searchValue ? `&search=${searchValue}` : "";
 
     try {
-      dispatch(fetchPizzas(order));
+      dispatch(fetchPizzas({ order, sortBy, category, search, currentPage }));
     } catch (error) {
       console.log(error);
     } finally {
