@@ -12,6 +12,7 @@ import { SearchContext } from "../App";
 import { useAppDispatch, type RootState } from "../redux/store";
 import { setCategoryId, setCurrentPage, setFilters } from "../redux/slices/filterSlice";
 import { fetchPizzas } from "../redux/slices/pizzaSlice";
+import { NotFound } from "./NotFound";
 
 export type PizzasType = {
   id: number;
@@ -32,30 +33,20 @@ export const Home = () => {
   const isSearch = useRef(false); //constant to wait for data to be received from the address bar
   const isMounted = useRef(false); //constant to determine the first render
 
-  const { items } = useSelector((state: RootState) => state.pizza);
+  const { items, status } = useSelector((state: RootState) => state.pizza);
 
   // get data using redux-------------------------------------------------------------------------------------------------
   const { categoryId, sortType, currentPage } = useSelector((state: RootState) => state.filter);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
   // This is a function to request and receive data from the server
   const getPizzas = async () => {
-    setIsLoading(true);
-
     // These are constants that are used to make a request to the server--------------------------------------------------
     const order: string = sortType.sortProperty.includes("-") ? "asc" : "desc";
     const sortBy: string = sortType.sortProperty.replace("-", "");
     const category: string = categoryId > 0 ? `category=${categoryId}` : "";
     const search: string = searchValue ? `&search=${searchValue}` : "";
 
-    try {
-      dispatch(fetchPizzas({ order, sortBy, category, search, currentPage }));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    dispatch(fetchPizzas({ order, sortBy, category, search, currentPage: String(currentPage) }));
   };
 
   // if some parameters were changed and there was a first render, then execute this code
@@ -113,7 +104,11 @@ export const Home = () => {
         <Sort />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
-      <div className='content__items'>{isLoading ? skeletons : pizzas}</div>
+      {status === "error" ? (
+        <NotFound />
+      ) : (
+        <div className='content__items'>{status === "loading" ? skeletons : pizzas}</div>
+      )}
 
       <Pagination currentPage={currentPage} onChangePage={(number) => dispatch(setCurrentPage(number))} />
     </div>
