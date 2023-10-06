@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { addItem, selectCartItemById } from "../../redux/slices/cartSlice";
-import { RootState } from "../../redux/store";
 
 type PropsType = {
   id: number;
