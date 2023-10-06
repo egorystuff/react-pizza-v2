@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 
-import { setSortType } from "../redux/slices/filterSlice";
+import { selectSort, setSortType } from "../redux/slices/filterSlice";
 
 export type SortListType = {
   name: string;
@@ -23,7 +22,7 @@ export function Sort() {
   const sortRef = useRef<HTMLDivElement>(null);
 
   // logic for working the sort list--------------------------------------------------------------------------------------
-  const sortType = useSelector((state: RootState) => state.filter.sortType);
+  const sortType = useSelector(selectSort);
 
   // logic for working the sort list
   const [isSort, setIsSort] = useState<boolean>(false);

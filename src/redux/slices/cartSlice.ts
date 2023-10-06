@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 export interface ItemsType {
   id: number;
@@ -58,6 +59,10 @@ export const cartSlice = createSlice({
     },
   },
 });
+
+//selectors
+export const selectCart = (state: RootState) => state.cart;
+export const selectCartItemById = (id: number) => (state: RootState) => state.cart.items.find((obj) => obj.id === id);
 
 // Action creators are generated for each case reducer function
 export const { addItem, minusItem, romoveItem, clearItems } = cartSlice.actions;

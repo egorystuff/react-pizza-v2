@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { RootState } from "../store";
 
 type PizzaParams = {
   order: string;
@@ -55,7 +56,7 @@ export const pizzaSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchPizzas.pending, (state) => {
       state.status = "loading";
-      state.items = [];
+      // state.items = [];
     });
 
     builder.addCase(fetchPizzas.fulfilled, (state, action) => {
@@ -69,6 +70,9 @@ export const pizzaSlice = createSlice({
     });
   },
 });
+
+//selectors
+export const selectPizzaData = (state: RootState) => state.pizza;
 
 // Action creators are generated for each case reducer function
 export const { setItems } = pizzaSlice.actions;

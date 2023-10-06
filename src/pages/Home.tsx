@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import qs from "qs";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../redux/store";
 
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { PizzaBlock } from "../components/PizzaBlock/PizzaBlock";
 import { Categories } from "../components/Categories";
 import { Sort, sortList } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
-import { SearchContext } from "../App";
-import { useAppDispatch, type RootState } from "../redux/store";
-import { setCategoryId, setCurrentPage, setFilters } from "../redux/slices/filterSlice";
-import { fetchPizzas } from "../redux/slices/pizzaSlice";
+import { selectFilterData, setCategoryId, setCurrentPage, setFilters } from "../redux/slices/filterSlice";
+import { fetchPizzas, selectPizzaData } from "../redux/slices/pizzaSlice";
 import { NotFound } from "./NotFound";
 
 export type PizzasType = {
@@ -26,17 +25,16 @@ export type PizzasType = {
 };
 
 export const Home = () => {
-  const { searchValue } = useContext(SearchContext);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const isSearch = useRef(false); //constant to wait for data to be received from the address bar
   const isMounted = useRef(false); //constant to determine the first render
 
-  const { items, status } = useSelector((state: RootState) => state.pizza);
+  const { items, status } = useSelector(selectPizzaData);
 
   // get data using redux-------------------------------------------------------------------------------------------------
-  const { categoryId, sortType, currentPage } = useSelector((state: RootState) => state.filter);
+  const { categoryId, sortType, currentPage, searchValue } = useSelector(selectFilterData);
 
   // This is a function to request and receive data from the server
   const getPizzas = async () => {
@@ -104,7 +102,7 @@ export const Home = () => {
         <Sort />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
-      {status === "error" ? (
+      {status === "error" || items.length === 0 ? (
         <NotFound />
       ) : (
         <div className='content__items'>{status === "loading" ? skeletons : pizzas}</div>
