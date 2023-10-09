@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import qs from "qs";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../redux/store";
 
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
@@ -88,7 +88,12 @@ export const Home = () => {
 
   // Below are the constants that are used for data rendering-------------------------------------------------------------
   const skeletons = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
-  const pizzas = items.map((obj: PizzasType) => <PizzaBlock key={obj.id} {...obj} />);
+  const pizzas = items.map((obj: PizzasType) => (
+    <Link key={obj.id} to={`/pizza/${obj.id}`}>
+      {" "}
+      <PizzaBlock {...obj} />
+    </Link>
+  ));
 
   return (
     <div className='container'>

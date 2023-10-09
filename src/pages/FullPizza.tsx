@@ -1,15 +1,48 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { selectPizzaData } from "../redux/slices/pizzaSlice";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+
+type PropsType = {
+  id: number;
+  imageUrl: string;
+  title: string;
+  types: number[];
+  sizes: number[];
+  price: number;
+  category: number;
+  rating: number;
+};
 
 export const FullPizza = () => {
-  const { items, status } = useSelector(selectPizzaData);
+  const [pizza, setPizza] = useState<PropsType>();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchPizza() {
+      try {
+        const { data } = await axios.get(`https://65060aa5ef808d3c66f0c4dc.mockapi.io/items/${id}`);
+        setPizza(data);
+      } catch (error) {
+        alert("error");
+        navigate("/");
+      }
+    }
+
+    fetchPizza();
+  }, [id]);
+
+  // if (!pizza) {
+  //   return "Загрузка...";
+  // }
 
   return (
     <div>
-      <h1>FullPizza</h1>
-      <div className='pizza-block'>
-        <img className='pizza-block__image' src={items[1].imageUrl} alt={items[1].imageUrl} />
+      <div className='container'>
+        <div className='pizza-block'>
+          <img className='pizza-block__image' src={pizza?.imageUrl} alt={pizza?.imageUrl} />
+          <h4 className='pizza-block__title'>{pizza?.title} </h4>
+        </div>
       </div>
     </div>
   );
