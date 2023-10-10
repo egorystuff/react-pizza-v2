@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 type PropsType = {
-  id: number;
+  id: string;
   imageUrl: string;
   title: string;
   types: number[];
@@ -13,7 +13,7 @@ type PropsType = {
   rating: number;
 };
 
-export const FullPizza = () => {
+export const FullPizza: React.FC = () => {
   const [pizza, setPizza] = useState<PropsType>();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,9 +32,9 @@ export const FullPizza = () => {
     fetchPizza();
   }, [id]);
 
-  // if (!pizza) {
-  //   return "Загрузка...";
-  // }
+  if (!pizza) {
+    return <>"Загрузка..."</>;
+  }
 
   return (
     <div>
