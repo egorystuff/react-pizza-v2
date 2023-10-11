@@ -8,7 +8,7 @@ type PropsType = {
   onChangePage: (value: number) => void;
 };
 
-export const Pagination = (props: PropsType) => {
+export const Pagination: React.FC<PropsType> = (props) => {
   return (
     <ReactPaginate
       className={styles.root}

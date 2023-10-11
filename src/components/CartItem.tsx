@@ -13,7 +13,7 @@ type PropsType = {
   count: number;
 };
 
-export const CartItem = (props: PropsType) => {
+export const CartItem: React.FC<PropsType> = (props) => {
   const item = props.id;
   const dispatch = useDispatch();
 

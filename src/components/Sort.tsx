@@ -17,7 +17,7 @@ export const sortList: SortListType[] = [
   { name: "алфавиту (возростание)", sortProperty: "-title" },
 ];
 
-export function Sort() {
+export const Sort = () => {
   const dispatch = useDispatch();
   const sortRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +35,7 @@ export function Sort() {
   //this is a method for detecting a click on a body area and removing it if the sort component disappears from the page
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (sortRef.current !== null) {
+      if (sortRef.current) {
         if (!event.composedPath().includes(sortRef.current)) {
           setIsSort(false);
         }
@@ -77,4 +77,4 @@ export function Sort() {
       )}
     </div>
   );
-}
+};

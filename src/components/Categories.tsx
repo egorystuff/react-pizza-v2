@@ -5,10 +5,10 @@ type PropsType = {
   setCategoryId: (index: number) => void;
 };
 
-export function Categories(props: PropsType) {
-  // initial array of categories-------------------------------------------
-  const arrayCatedories: Array<string> = ["Все", "Мясные", "Вегетарианская", "Гриль", "Острые", "Закрытые"];
+// initial array of categories-------------------------------------------
+const arrayCatedories: Array<string> = ["Все", "Мясные", "Вегетарианская", "Гриль", "Острые", "Закрытые"];
 
+export const Categories: React.FC<PropsType> = (props) => {
   return (
     <div className='categories'>
       <ul>
@@ -25,4 +25,4 @@ export function Categories(props: PropsType) {
       </ul>
     </div>
   );
-}
+};

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { addItem, selectCartItemById } from "../../redux/slices/cartSlice";
+import { Link } from "react-router-dom";
 
 type PropsType = {
   id: number;
@@ -14,7 +15,7 @@ type PropsType = {
   rating: number;
 };
 
-export function PizzaBlock(props: PropsType) {
+export const PizzaBlock: React.FC<PropsType> = (props) => {
   const dispatch = useDispatch();
   const cartItem = useSelector(selectCartItemById(props.id));
 
@@ -43,7 +44,10 @@ export function PizzaBlock(props: PropsType) {
   return (
     <div className='pizza-block-wrapper'>
       <div className='pizza-block'>
-        <img className='pizza-block__image' src={props.imageUrl} alt={props.imageUrl} />
+        <Link to={`/pizza/${props.id}`}>
+          <img className='pizza-block__image' src={props.imageUrl} alt={props.imageUrl} />
+        </Link>
+
         <h4 className='pizza-block__title'>{props.title} </h4>
         <div className='pizza-block__selector'>
           <ul>
@@ -87,4 +91,4 @@ export function PizzaBlock(props: PropsType) {
       </div>
     </div>
   );
-}
+};

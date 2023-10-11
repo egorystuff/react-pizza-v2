@@ -1,34 +1,31 @@
 import React, { useCallback, useRef, useState } from "react";
 import debounce from "lodash.debounce";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useDispatch } from "react-redux";
 
 import styles from "./styles.module.scss";
 import { setSearchValue } from "../../redux/slices/filterSlice";
 
-export const Search = () => {
+export const Search: React.FC = () => {
   const dispatch = useDispatch();
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   // function for clearing input by clicking on the clear button
-  const onClickClear = () => {
+  const onClickClear = (event: React.MouseEvent<SVGSVGElement>) => {
     dispatch(setSearchValue(""));
     setValue("");
-    if (inputRef.current !== null) {
-      inputRef.current.focus();
-    }
+    inputRef.current?.focus();
   };
 
   const updateSearchValue = useCallback(
-    debounce((value) => {
+    debounce((value: string) => {
       dispatch(setSearchValue(value));
     }, 300),
     [],
   );
 
   // function to update local state and call deferred search function
-  const onChangeInput = (event: { target: { value: string } }) => {
+  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     updateSearchValue(event.target.value);
   };
@@ -60,7 +57,7 @@ export const Search = () => {
 
       {value && (
         <svg
-          onClick={() => onClickClear()}
+          onClick={onClickClear}
           className={styles.clearIcon}
           width='800px'
           height='800px'

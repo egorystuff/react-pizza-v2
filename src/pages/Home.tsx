@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import qs from "qs";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../redux/store";
 
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
@@ -24,7 +24,7 @@ export type PizzasType = {
   rating: number;
 };
 
-export const Home = () => {
+export const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -90,19 +90,12 @@ export const Home = () => {
   const skeletons = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
   const pizzas = items.map((obj: PizzasType) => <PizzaBlock key={obj.id} {...obj} />);
 
-  // const pizzas = items.map((obj: PizzasType) => (
-  //   <Link key={obj.id} to={`/pizza/${obj.id}`}>
-  //     {" "}
-  //     <PizzaBlock {...obj} />
-  //   </Link>
-  // ));
-
   return (
     <div className='container'>
       <div className='content__top'>
         <Categories
           categoryId={categoryId}
-          setCategoryId={(index) => {
+          setCategoryId={(index: number) => {
             dispatch(setCategoryId(index));
           }}
         />
@@ -115,7 +108,7 @@ export const Home = () => {
         <div className='content__items'>{status === "loading" ? skeletons : pizzas}</div>
       )}
 
-      <Pagination currentPage={currentPage} onChangePage={(number) => dispatch(setCurrentPage(number))} />
+      <Pagination currentPage={currentPage} onChangePage={(number: number) => dispatch(setCurrentPage(number))} />
     </div>
   );
 };
