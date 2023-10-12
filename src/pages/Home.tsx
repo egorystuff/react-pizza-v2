@@ -25,7 +25,7 @@ export type PizzasType = {
 };
 
 export const Home: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const appDispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const isSearch = useRef(false); //constant to wait for data to be received from the address bar
@@ -44,7 +44,7 @@ export const Home: React.FC = () => {
     const category: string = categoryId > 0 ? `category=${categoryId}` : "";
     const search: string = searchValue ? `&search=${searchValue}` : "";
 
-    dispatch(fetchPizzas({ order, sortBy, category, search, currentPage: String(currentPage) }));
+    appDispatch(fetchPizzas({ order, sortBy, category, search, currentPage: String(currentPage) }));
   };
 
   // if some parameters were changed and there was a first render, then execute this code
@@ -67,7 +67,10 @@ export const Home: React.FC = () => {
       const params = qs.parse(window.location.search.substring(1));
       const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
 
-      dispatch(setFilters({ ...params, sort }));
+      if (sort !== undefined) {
+        appDispatch(setFilters({ ...params, sort }));
+      }
+
       isSearch.current = true;
     }
   }, []);
@@ -96,7 +99,7 @@ export const Home: React.FC = () => {
         <Categories
           categoryId={categoryId}
           setCategoryId={(index: number) => {
-            dispatch(setCategoryId(index));
+            appDispatch(setCategoryId(index));
           }}
         />
         <Sort />
@@ -108,7 +111,7 @@ export const Home: React.FC = () => {
         <div className='content__items'>{status === "loading" ? skeletons : pizzas}</div>
       )}
 
-      <Pagination currentPage={currentPage} onChangePage={(number: number) => dispatch(setCurrentPage(number))} />
+      <Pagination currentPage={currentPage} onChangePage={(number: number) => appDispatch(setCurrentPage(number))} />
     </div>
   );
 };

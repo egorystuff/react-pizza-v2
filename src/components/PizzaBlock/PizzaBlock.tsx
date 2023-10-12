@@ -46,9 +46,8 @@ export const PizzaBlock: React.FC<PropsType> = (props) => {
       <div className='pizza-block'>
         <Link to={`/pizza/${props.id}`}>
           <img className='pizza-block__image' src={props.imageUrl} alt={props.imageUrl} />
+          <h4 className='pizza-block__title'>{props.title} </h4>
         </Link>
-
-        <h4 className='pizza-block__title'>{props.title} </h4>
         <div className='pizza-block__selector'>
           <ul>
             {props.types.map((value: number, index: number, array: Array<number>) => (

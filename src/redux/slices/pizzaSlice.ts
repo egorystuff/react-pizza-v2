@@ -3,13 +3,14 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
 
-type PizzaParams = {
-  order: string;
-  sortBy: string;
-  category: string;
-  search: string;
-  currentPage: string;
-};
+type PizzaParams = Record<string, string>;
+// type PizzaParams = {
+//   order: string;
+//   sortBy: string;
+//   category: string;
+//   search: string;
+//   currentPage: string;
+// };
 
 type PizzaType = {
   id: number;
@@ -22,27 +23,30 @@ type PizzaType = {
   rating: number;
 };
 
-export const fetchPizzas = createAsyncThunk<PizzaType[], PizzaParams>(
-  "pizza/fetchPizzasByIdStatus",
-  async (params, thunkAPI) => {
-    const { sortBy, order, category, search, currentPage } = params;
-
-    const response = await axios.get(
-      `https://65060aa5ef808d3c66f0c4dc.mockapi.io/items?&page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-    );
-
-    return response.data;
-  },
-);
-
-export interface PizzaSliceState {
-  items: PizzaType[];
-  status: string;
+enum Status {
+  LOADING = "loading",
+  SUCCESS = "success",
+  ERROR = "error",
 }
+
+interface PizzaSliceState {
+  items: PizzaType[];
+  status: Status;
+}
+
+export const fetchPizzas = createAsyncThunk<PizzaType[], PizzaParams>("pizza/fetchPizzasByIdStatus", async (params) => {
+  const { sortBy, order, category, search, currentPage } = params;
+
+  const { data } = await axios.get<PizzaType[]>(
+    `https://65060aa5ef808d3c66f0c4dc.mockapi.io/items?&page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+  );
+
+  return data;
+});
 
 const initialState: PizzaSliceState = {
   items: [],
-  status: "loading", //loading | success | error
+  status: Status.LOADING, //loading | success | error
 };
 
 export const pizzaSlice = createSlice({
@@ -55,17 +59,16 @@ export const pizzaSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPizzas.pending, (state) => {
-      state.status = "loading";
-      // state.items = [];
+      state.status = Status.LOADING;
     });
 
     builder.addCase(fetchPizzas.fulfilled, (state, action) => {
       state.items = action.payload;
-      state.status = "success";
+      state.status = Status.SUCCESS;
     });
 
     builder.addCase(fetchPizzas.rejected, (state) => {
-      state.status = "error";
+      state.status = Status.ERROR;
       state.items = [];
     });
   },
