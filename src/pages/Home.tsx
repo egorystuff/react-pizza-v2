@@ -9,9 +9,11 @@ import { PizzaBlock } from "../components/PizzaBlock/PizzaBlock";
 import { Categories } from "../components/Categories";
 import { Sort, sortList } from "../components/Sort";
 import { Pagination } from "../components/Pagination/Pagination";
-import { selectFilterData, setCategoryId, setCurrentPage, setFilters } from "../redux/slices/filterSlice";
-import { fetchPizzas, selectPizzaData } from "../redux/slices/pizzaSlice";
 import { NotFound } from "./NotFound";
+import { selectFilterData } from "../redux/filter/selectors";
+import { setCategoryId, setCurrentPage, setFilters } from "../redux/filter/slice";
+import { selectPizzaData } from "../redux/pizza/selectors";
+import { fetchPizzas } from "../redux/pizza/asyncActions";
 
 export type PizzasType = {
   id: number;

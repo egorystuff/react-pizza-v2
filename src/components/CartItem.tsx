@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 
-import { addItem, minusItem, romoveItem } from "../redux/slices/cartSlice";
+import { addItem, minusItem, romoveItem } from "../redux/cart/slice";
 
 type PropsType = {
   id: number;

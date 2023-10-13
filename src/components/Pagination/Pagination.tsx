@@ -10,8 +10,6 @@ type PropsType = {
 };
 
 export const Pagination: React.FC<PropsType> = memo((props) => {
-  useWhyDidYouUpdate("Pagination", props);
-  console.log("pag");
   return (
     <ReactPaginate
       className={styles.root}
