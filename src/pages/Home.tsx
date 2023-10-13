@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import qs from "qs";
 import { useNavigate } from "react-router-dom";
@@ -93,16 +93,17 @@ export const Home: React.FC = () => {
   const skeletons = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
   const pizzas = items.map((obj: PizzasType) => <PizzaBlock key={obj.id} {...obj} />);
 
+  const onChangeCategory = useCallback((index: number) => {
+    appDispatch(setCategoryId(index));
+  }, []);
+
+  const onChangePage = useCallback((number: number) => appDispatch(setCurrentPage(number)), []);
+
   return (
     <div className='container'>
       <div className='content__top'>
-        <Categories
-          categoryId={categoryId}
-          setCategoryId={(index: number) => {
-            appDispatch(setCategoryId(index));
-          }}
-        />
-        <Sort />
+        <Categories categoryId={categoryId} setCategoryId={onChangeCategory} />
+        <Sort value={sortType} />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
       {status === "error" || items.length === 0 ? (
@@ -111,7 +112,7 @@ export const Home: React.FC = () => {
         <div className='content__items'>{status === "loading" ? skeletons : pizzas}</div>
       )}
 
-      <Pagination currentPage={currentPage} onChangePage={(number: number) => appDispatch(setCurrentPage(number))} />
+      <Pagination currentPage={currentPage} onChangePage={onChangePage} />
     </div>
   );
 };

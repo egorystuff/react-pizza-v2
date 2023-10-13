@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 type PropsType = {
   categoryId: number;
@@ -8,7 +8,7 @@ type PropsType = {
 // initial array of categories-------------------------------------------
 const arrayCatedories: Array<string> = ["Все", "Мясные", "Вегетарианская", "Гриль", "Острые", "Закрытые"];
 
-export const Categories: React.FC<PropsType> = (props) => {
+export const Categories: React.FC<PropsType> = memo((props) => {
   return (
     <div className='categories'>
       <ul>
@@ -25,4 +25,4 @@ export const Categories: React.FC<PropsType> = (props) => {
       </ul>
     </div>
   );
-};
+});

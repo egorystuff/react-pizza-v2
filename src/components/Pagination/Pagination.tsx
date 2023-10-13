@@ -1,14 +1,17 @@
-import React from "react";
+import React, { memo } from "react";
 import ReactPaginate from "react-paginate";
 
 import styles from "./styles.module.scss";
+import { useWhyDidYouUpdate } from "ahooks";
 
 type PropsType = {
   currentPage: number;
   onChangePage: (value: number) => void;
 };
 
-export const Pagination: React.FC<PropsType> = (props) => {
+export const Pagination: React.FC<PropsType> = memo((props) => {
+  useWhyDidYouUpdate("Pagination", props);
+  console.log("pag");
   return (
     <ReactPaginate
       className={styles.root}
@@ -22,4 +25,4 @@ export const Pagination: React.FC<PropsType> = (props) => {
       renderOnZeroPageCount={null}
     />
   );
-};
+});

@@ -1,7 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { memo, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
-import { selectSort, setSortType } from "../redux/slices/filterSlice";
+import { setSortType } from "../redux/slices/filterSlice";
+
+type SortListProps = {
+  value: SortListType;
+};
 
 export type SortListType = {
   name: string;
@@ -17,12 +21,9 @@ export const sortList: SortListType[] = [
   { name: "алфавиту (возростание)", sortProperty: "-title" },
 ];
 
-export const Sort = () => {
+export const Sort: React.FC<SortListProps> = memo((props) => {
   const dispatch = useDispatch();
   const sortRef = useRef<HTMLDivElement>(null);
-
-  // logic for working the sort list--------------------------------------------------------------------------------------
-  const sortType = useSelector(selectSort);
 
   // logic for working the sort list
   const [isSort, setIsSort] = useState<boolean>(false);
@@ -57,7 +58,7 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsSort(!isSort)}>{sortType.name}</span>
+        <span onClick={() => setIsSort(!isSort)}>{props.value.name}</span>
       </div>
       {isSort && (
         <div className='sort__popup'>
@@ -68,7 +69,7 @@ export const Sort = () => {
                 onClick={() => {
                   onClickSortList(obj);
                 }}
-                className={sortType.sortProperty === obj.sortProperty ? "active" : ""}>
+                className={props.value.sortProperty === obj.sortProperty ? "active" : ""}>
                 {obj.name}
               </li>
             ))}
@@ -77,4 +78,4 @@ export const Sort = () => {
       )}
     </div>
   );
-};
+});
